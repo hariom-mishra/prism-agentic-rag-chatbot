@@ -5,3 +5,6 @@ authlib
 passlib[bcrypt]
 asyncmy
 sqlalchemy
+pydantic-settings
+pydantic
+greenlet
