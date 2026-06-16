@@ -3,7 +3,7 @@ python-dotenv
 uvicorn
 authlib
 passlib[bcrypt]
-asyncmy
+asyncpg
 sqlalchemy
 pydantic-settings
 pydantic

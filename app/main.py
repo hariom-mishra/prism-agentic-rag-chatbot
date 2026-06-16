@@ -1,8 +1,10 @@
 from fastapi import FastAPI, Depends
 from core.db import get_db, db_engine, Base
+import models
 from contextlib import asynccontextmanager
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
+from api.product import router as product_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -16,6 +18,8 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(lifespan=lifespan)
+
+app.include_router(product_router)
 
 @app.get("/")
 async def test(db: AsyncSession = Depends(get_db)):

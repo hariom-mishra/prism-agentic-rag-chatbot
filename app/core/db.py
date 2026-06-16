@@ -9,7 +9,7 @@ db_engine = create_async_engine(
     pool_recycle=3600
 )
 
-async_session = async_sessionmaker(db_engine, expire_on_commit=False, auto_commit=False,)
+async_session = async_sessionmaker(db_engine, expire_on_commit=False, autoflush=False)
 
 class Base(DeclarativeBase):
     pass

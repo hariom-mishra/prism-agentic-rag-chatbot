@@ -16,7 +16,9 @@ class Setting(BaseSettings):
     @property
     def DATABASE_URL(self) -> str:
         encoded_password = quote_plus(self.DB_PASSWORD)
-        return f"mysql+asyncmy://{self.DB_USER}:{encoded_password}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        # If password is empty, don't include the colon after user
+        auth = f"{self.DB_USER}:{encoded_password}" if self.DB_PASSWORD else self.DB_USER
+        return f"postgresql+asyncpg://{auth}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
 
 setting = Setting()

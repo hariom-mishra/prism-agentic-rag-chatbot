@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "asyncmy>=0.2.11",
+    "asyncpg>=0.31.0",
     "authlib>=1.7.2",
     "fastapi>=0.137.1",
     "greenlet>=3.5.1",
