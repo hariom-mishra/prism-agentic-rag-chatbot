@@ -34,3 +34,11 @@ def verify_password(password: str, hashed_password: str) -> bool:
         return bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8'))
     except Exception:
         return False
+
+def decode_access_token(token: str) -> dict:
+    try:
+        claims = jwt.decode(token, setting.SECRET_KEY)
+        claims.validate()
+        return dict(claims)
+    except Exception:
+        return None
