@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from repository.users_repo import UserRepository
-from schema.user import UserSignUp
+from schema.user import UserSignUp, UserUpdate
 from core.security import verify_password
 from models.user import User
 from fastapi import HTTPException
@@ -35,3 +35,20 @@ class UserService:
 
     async def change_user_role(self, user_id: int, role: str) -> User:
         return await self.repo.update_user(user_id, {"role": role})
+
+    async def update_user_details(self, user_id: int, user_update: UserUpdate) -> User:
+        update_data = {}
+        if user_update.name is not None:
+            update_data["name"] = user_update.name
+        if user_update.gender is not None:
+            update_data["gender"] = user_update.gender
+        if user_update.pincode is not None:
+            update_data["pincode"] = user_update.pincode
+        if user_update.password is not None:
+            from core.security import hash_password
+            update_data["hashed_password"] = hash_password(user_update.password)
+            
+        if not update_data:
+            return await self.repo.get_user_by_id(user_id)
+            
+        return await self.repo.update_user(user_id, update_data)

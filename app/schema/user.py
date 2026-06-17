@@ -23,3 +23,9 @@ class UserResponse(UserBase):
 
 class UserRoleUpdate(BaseModel):
     role: str
+
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    gender: Optional[str] = None
+    pincode: Optional[str] = None
+    password: Optional[str] = None
