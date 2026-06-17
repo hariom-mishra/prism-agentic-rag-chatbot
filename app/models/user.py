@@ -14,7 +14,6 @@ class User(Base):
     gender: Mapped[str]= mapped_column(String(10), nullable=True)
     pincode: Mapped[str]=mapped_column(String(6), nullable=True)
     hashed_password: Mapped[str]=mapped_column(String(255), nullable=False, )
-    created_at: Mapped[datetime]=mapped_column(
-        server_default=func.now(),
-        default=datetime.now(timezone.utc)
+    created_at: Mapped[datetime] = mapped_column(
+        server_default=func.now()
     )

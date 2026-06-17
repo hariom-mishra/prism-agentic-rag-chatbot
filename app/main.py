@@ -5,11 +5,13 @@ from contextlib import asynccontextmanager
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.product import router as product_router
+from api.auth import router as auth_router
+from api.users import router as users_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
-        async with db_engine.connect() as conn:
+        async with db_engine.begin() as conn:
             await conn.execute(text("SELECT 1"))
             print("🎉 Database connected successfully on startup!")
             await conn.run_sync(Base.metadata.create_all)
@@ -20,6 +22,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(product_router)
+app.include_router(auth_router)
+app.include_router(users_router)
 
 @app.get("/")
 async def test(db: AsyncSession = Depends(get_db)):

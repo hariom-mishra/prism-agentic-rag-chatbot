@@ -11,6 +11,9 @@ class Setting(BaseSettings):
     DB_USER: str
     DB_PASSWORD: str
     DB_HOST: str
+    TOKEN_EXP: int = 86400
+    ALGORITHM: str = "HS256"
+    SECRET_KEY: str
 
     @computed_field
     @property
