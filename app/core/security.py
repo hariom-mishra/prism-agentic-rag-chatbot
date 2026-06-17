@@ -1,5 +1,6 @@
 import bcrypt
-from authlib.jose import jwt
+import joserfc.jwt
+import joserfc.jwk
 from datetime import datetime, timezone, timedelta
 from core.config import setting
 
@@ -15,7 +16,8 @@ def create_access_token(user) -> str:
         "sub": str(user.id),
         "role": user.role
     }
-    return jwt.encode(header, payload, setting.SECRET_KEY).decode("utf-8")
+    key = joserfc.jwk.import_key(setting.SECRET_KEY, "oct")
+    return joserfc.jwt.encode(header, payload, key)
 
 def create_refresh_token(user) -> str:
     # Refresh token expires in 7 days
@@ -27,7 +29,8 @@ def create_refresh_token(user) -> str:
         "role": user.role,
         "refresh": True
     }
-    return jwt.encode(header, payload, setting.SECRET_KEY).decode("utf-8")
+    key = joserfc.jwk.import_key(setting.SECRET_KEY, "oct")
+    return joserfc.jwt.encode(header, payload, key)
 
 def verify_password(password: str, hashed_password: str) -> bool:
     try: 
@@ -37,8 +40,8 @@ def verify_password(password: str, hashed_password: str) -> bool:
 
 def decode_access_token(token: str) -> dict:
     try:
-        claims = jwt.decode(token, setting.SECRET_KEY)
-        claims.validate()
-        return dict(claims)
+        key = joserfc.jwk.import_key(setting.SECRET_KEY, "oct")
+        decoded = joserfc.jwt.decode(token, key)
+        return dict(decoded.claims)
     except Exception:
         return None
