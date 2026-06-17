@@ -1,15 +1,26 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, field_validator
 
 class ProductBase(BaseModel):
     name: str
-    images: List[str]
+    price: float
+    special_price: Optional[float] = None
+    stock: int
+    category: str
+    description: str
+    images: List[str] = []
 
 class ProductCreate(ProductBase):
     pass
 
-class ProductUpdate(ProductBase):
-    pass
+class ProductUpdate(BaseModel):
+    name: Optional[str] = None
+    price: Optional[float] = None
+    special_price: Optional[float] = None
+    stock: Optional[int] = None
+    category: Optional[str] = None
+    description: Optional[str] = None
+    images: Optional[List[str]] = None
 
 class ProductResponse(ProductBase):
     id: int

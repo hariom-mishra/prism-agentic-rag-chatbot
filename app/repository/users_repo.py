@@ -35,5 +35,14 @@ class UserRepository:
     async def soft_delete_user(self, user_id: int):
         pass
     
-    async def update_user(self, user_id: int, user_data):
-        pass
+    async def update_user(self, user_id: int, user_data: dict):
+        result = await self.db.execute(select(User).where(User.id == user_id))
+        user_model = result.scalars().first()
+        if not user_model:
+            return None
+        for key, value in user_data.items():
+            if value is not None:
+                setattr(user_model, key, value)
+        await self.db.commit()
+        await self.db.refresh(user_model)
+        return user_model

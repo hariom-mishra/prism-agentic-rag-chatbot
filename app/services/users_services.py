@@ -32,3 +32,6 @@ class UserService:
 
     async def get_users(self, offset: int, limit: int) -> list[User]:
         return await self.repo.get_users(offset, limit)
+
+    async def change_user_role(self, user_id: int, role: str) -> User:
+        return await self.repo.update_user(user_id, {"role": role})
