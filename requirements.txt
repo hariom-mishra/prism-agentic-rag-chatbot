@@ -9,3 +9,4 @@ pydantic-settings
 pydantic[email]
 pydantic
 greenlet
+pytest
