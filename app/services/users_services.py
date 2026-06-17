@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from repository.users_repo import UserRepository
 from schema.user import UserSignUp, UserUpdate
-from core.security import verify_password
+from core.security import verify_password, hash_password
 from models.user import User
 from fastapi import HTTPException
 
@@ -16,7 +16,15 @@ class UserService:
             raise HTTPException(status_code=400, detail="User already exists")
         
         # Create new user
-        return await self.repo.create_user(user)
+        user_data = {
+            "name": user.name,
+            "email": user.email,
+            "hashed_password": hash_password(user.password),
+            "gender": user.gender,
+            "pincode": user.pincode,
+            "role": user.role
+        }
+        return await self.repo.create_user(user_data)
 
     async def login_user(self, email: str, password: str) -> User:
         # Check if the email is registered, if not reject request with status code 404 Not Found

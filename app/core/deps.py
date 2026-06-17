@@ -29,8 +29,16 @@ async def get_current_user(
             detail="Invalid token claims",
         )
         
+    try:
+        user_id_int = int(user_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid user ID in token",
+        )
+        
     service = UserService(db)
-    user = await service.repo.get_user_by_id(int(user_id))
+    user = await service.repo.get_user_by_id(user_id_int)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

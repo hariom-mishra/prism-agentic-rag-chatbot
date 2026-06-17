@@ -20,7 +20,6 @@ async def get_db():
             yield db
         except Exception as e:
             print(f"something went wrong: {e}")
-            await db.close()
             raise
 
 

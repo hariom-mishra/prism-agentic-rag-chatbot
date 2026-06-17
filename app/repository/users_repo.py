@@ -1,19 +1,19 @@
 from models.user import User
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from core.security import hash_password
 
 class UserRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def create_user(self, user):
+    async def create_user(self, user_data: dict):
         user_model = User(
-            name=user.name,
-            email=user.email,
-            hashed_password=hash_password(user.password),
-            gender=user.gender,
-            pincode=user.pincode
+            name=user_data.get("name"),
+            email=user_data.get("email"),
+            hashed_password=user_data.get("hashed_password"),
+            gender=user_data.get("gender"),
+            pincode=user_data.get("pincode"),
+            role=user_data.get("role", "user")
         )
         self.db.add(user_model)
         await self.db.commit()
