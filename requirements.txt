@@ -11,3 +11,4 @@ pydantic
 greenlet
 pytest
 httpx
+redis[async]

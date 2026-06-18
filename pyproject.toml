@@ -18,4 +18,6 @@ dependencies = [
     "sqlalchemy>=2.0.51",
     "uvicorn>=0.49.0",
     "pytest>=9.1.0",
+    "httpx>=0.28.1",
+    "redis[async]>=8.0.0",
 ]
