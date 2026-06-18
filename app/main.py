@@ -9,6 +9,8 @@ from api.auth import router as auth_router
 from api.users import router as users_router
 
 from core.redis import init_redis, close_redis
+from core.middleware import ProfilingMiddleware
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -25,6 +27,7 @@ async def lifespan(app: FastAPI):
     await close_redis()
 
 app = FastAPI(lifespan=lifespan)
+app.add_middleware(ProfilingMiddleware)
 
 app.include_router(product_router)
 app.include_router(auth_router)

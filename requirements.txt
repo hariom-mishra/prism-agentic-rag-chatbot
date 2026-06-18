@@ -12,3 +12,4 @@ greenlet
 pytest
 httpx
 redis[async]
+line-profiler
