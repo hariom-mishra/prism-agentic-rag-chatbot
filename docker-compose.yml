@@ -43,5 +43,18 @@ services:
     depends_on:
       - web
 
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana_service
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
 volumes:
   postgres_data:
+  grafana_data:
