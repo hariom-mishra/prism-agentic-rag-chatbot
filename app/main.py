@@ -8,6 +8,8 @@ from api.product import router as product_router
 from api.auth import router as auth_router
 from api.users import router as users_router
 
+from core.redis import init_redis, close_redis
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
@@ -17,7 +19,10 @@ async def lifespan(app: FastAPI):
             await conn.run_sync(Base.metadata.create_all)
     except Exception as e:
         print(f"❌ Database connection failed on startup: {e}")
+    
+    await init_redis()
     yield
+    await close_redis()
 
 app = FastAPI(lifespan=lifespan)
 

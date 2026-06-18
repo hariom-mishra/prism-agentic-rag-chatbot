@@ -8,10 +8,29 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../app')))
 
+from core.config import setting
+setting.REDIS_DB = 1  # Use DB 1 for tests to avoid overlapping with dev/prod
+
 from main import app
 from core.db import Base, get_db
 
 TEST_DATABASE_URL = "postgresql+asyncpg://employee_user:Hariom123@localhost:5432/prism_test"
+
+@pytest.fixture(autouse=True)
+def clean_redis():
+    import redis
+    r = redis.Redis(
+        host=setting.REDIS_HOST,
+        port=setting.REDIS_PORT,
+        db=setting.REDIS_DB
+    )
+    try:
+        r.flushdb()
+    except Exception as e:
+        print(f"\n⚠️ Redis flush skipped in tests: {e}")
+    finally:
+        r.close()
+
 
 @pytest.fixture
 async def test_engine():
@@ -54,7 +73,10 @@ async def client(init_db, TestingSessionLocal):
             yield session
 
     app.dependency_overrides[get_db] = override_get_db
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as ac:
-        yield ac
+    
+    async with app.router.lifespan_context(app):
+        transport = ASGITransport(app=app)
+        async with AsyncClient(transport=transport, base_url="http://test") as ac:
+            yield ac
+            
     app.dependency_overrides.clear()

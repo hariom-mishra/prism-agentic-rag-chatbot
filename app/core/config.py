@@ -14,6 +14,9 @@ class Setting(BaseSettings):
     TOKEN_EXP: int = 86400
     ALGORITHM: str = "HS256"
     SECRET_KEY: str
+    REDIS_HOST: str = "localhost"
+    REDIS_PORT: int = 6379
+    REDIS_DB: int = 0
 
     @computed_field
     @property
