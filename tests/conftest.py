@@ -53,7 +53,7 @@ async def init_db(test_engine):
         await conn.run_sync(Base.metadata.drop_all)
 
 @pytest.fixture
-def TestingSessionLocal(test_engine):
+def testingSessionLocal(test_engine):
     return async_sessionmaker(
         bind=test_engine,
         class_=AsyncSession,
@@ -62,14 +62,14 @@ def TestingSessionLocal(test_engine):
     )
 
 @pytest.fixture
-async def db_session(init_db, TestingSessionLocal):
-    async with TestingSessionLocal() as session:
+async def db_session(init_db, testingSessionLocal):
+    async with testingSessionLocal() as session:
         yield session
 
 @pytest.fixture
-async def client(init_db, TestingSessionLocal):
+async def client(init_db, testingSessionLocal):
     async def override_get_db():
-        async with TestingSessionLocal() as session:
+        async with testingSessionLocal() as session:
             yield session
 
     app.dependency_overrides[get_db] = override_get_db
